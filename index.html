@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+    <meta name="description"
+        content="HumanVid: Demystifying Training Data for Camera-controllable Human Image Animation">
+  <meta name="keywords" content="HumanVid, Human Image Animation">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HumanVid: Demystifying Training Data for Camera-controllable Human Image Animation</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">HumanVid: Demystifying Training Data for Camera-controllable Human Image Animation</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://zhenzhiwang.github.io/">Zhenzhi Wang</a><sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="https://yixuanli98.github.io/">Yixuan Li</a><sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="https://zengyh1900.github.io/">Yanhong Zeng</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="#">Youqing Fang</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://guoyww.github.io/">Yuwei Guo</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="#">Wenran Liu</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://sparkstj.github.io/">Jing Tan</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://chenkai.site/">Kai Chen</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://daibo.info/">Bo Dai</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://tianfan.info/">Tianfan Xue</a><sup>1,2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="http://dahua.site/">Dahua Lin</a><sup>1,2</sup>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>CUHK,</span>
+            <span class="author-block"><sup>2</sup>Shanghai Artificial Intelligence Laboratory</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="#"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/zhenzhiwang/HumanVid"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. 
+              <span class="link-block">
+                <a href="#"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                  </a>
+              -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="teaser" autoplay muted loop playsinline height="100%">
+        <source src="./static/videos/matrix.mp4"
+                type="video/mp4">
+      </video>
+      <h2 class="subtitle has-text-centered">
+        By training a simple baseline combined by <a href="https://github.com/MooreThreads/Moore-AnimateAnyone">Animate Anyone</a> and <a href="https://github.com/hehao13/CameraCtrl">CameraCtrl</a> on our HumanVid dataset, we are able to generate movie-level videos with both character pose and camera movements without any tricks. (Top left): input image; (Top right): human pose condition; (Bottom left): our result; (Bottom right): groundtruth video. The camera condition is not visualized in this video.
+      </h2>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Human image animation involves generating videos from a character photo, allowing user control and unlocking potential for video and movie production. While recent approaches yield impressive results using high-quality training data, the inaccessibility of these datasets hampers fair and transparent benchmarking. Moreover, these approaches prioritize 2D human motion and overlook the significance of camera motions in videos, leading to limited control and unstable video generation.To demystify the training data, we present <span class="dnerf">HumanVid</span>, the first large-scale high-quality dataset tailored for human image animation, which combines crafted real-world and synthetic data. For the real-world data, we compile a vast collection of copyright-free real-world videos from the internet. Through a carefully designed rule-based filtering strategy, we ensure the inclusion of high-quality videos, resulting in a collection of 20K human-centric videos in 1080P resolution. Human and camera motion annotation is accomplished using a 2D pose estimator and a SLAM-based method. For the synthetic data, we gather 2,300 copyright-free 3D avatar assets to augment existing available 3D assets. Notably, we introduce a rule-based camera trajectory generation method, enabling the synthetic pipeline to incorporate diverse and precise camera motion annotation, which can rarely be found in real-world data. To verify the effectiveness of <span class="dnerf">HumanVid</span>, we establish a baseline model named CamAnimate, short for Camera-controllable Human Animation, that considers both human and camera motions as conditions. Through extensive experimentation, we demonstrate that such simple baseline training on our <span class="dnerf">HumanVid</span> achieves state-of-the-art performance in controlling both human pose and camera motions, setting a new benchmark.
+          </p>
+          <p>As our paper is still under review, we cannot release code and data immediately. We plan to release data in a few weeks. The training/inference code and checkpoint will be publicly available in late September, 2024. Should you have any enquiries, please contact the first author.</p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+    <!-- Paper video. 
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+    -->
+    <!--/ Paper video. -->
+  </div>
+</section>
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-4">In-the-wild Cases</h2>
+      <p>All the cases shown below are test set results. Horizontal and vertical videos are generated by the same model weights. You can use the maximize button in the bottom right corner of the video to play the video in full screen mode to observe more details.</p>
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-steve">
+          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/film-2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/film-1.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/nolan-1.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/nolan-2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-fullbody">
+          <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/inception.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-blueshirt">
+          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/lalaland.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/nolan-3.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-mask">
+          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/fight-1.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-coffee">
+          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/fight-2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-toby">
+          <video poster="" id="toby" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/dance-1.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-toby">
+          <video poster="" id="toby" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/ballet-1.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-4">Pexels Test Set Cases (Horizontal)</h2>
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-pexels-h-1">
+          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-h-1.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-h-2">
+          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-h-5.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-h-3">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-h-4.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-h-4">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-h-3.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-h-5">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-h-2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-h-6">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-h-6.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-h-7">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-h-7.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-h-8">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-h-8.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-h-9">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-h-9.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-h-10">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-h-10.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-h-11">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-h-11.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-h-12">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-h-12.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-h-13">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-h-13.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-h-14">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-h-14.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-h-15">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-h-15.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-4">Pexels Test Set Cases (Vertical)</h2>
+      <p>From left to right: input image, human pose condition, our result, groundtruth video.</p>
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-pexels-v-1">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-v-1.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-v-2">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-v-2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-v-3">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-v-3.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-v-4">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-v-4.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-v-5">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-v-5.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-v-6">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-v-6.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-v-7">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-v-7.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-v-8">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-v-8.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-v-9">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-v-9.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-v-10">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-v-10.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-v-11">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-v-11.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-v-12">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-v-12.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-v-13">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-v-13.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-v-14">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-v-14.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-v-15">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-v-15.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-v-16">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-v-16.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-v-17">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-v-17.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pexels-v-18">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pexels-v-18.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-4">TikTok Test Set Cases</h2>
+      The Tiktok test set uses the last 40 videos. Visualizations are from this set, using a model trained on HumanVid and the first 300 Tiktok videos. By setting camera parameters to be static, it produce static backgrounds which is consistent to Animate Anyone's setting.
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-tiktok-303">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/tiktok-303.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-tiktok-304">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/tiktok-304.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-tiktok-305">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/tiktok-305.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-tiktok-307">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/tiktok-307.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-tiktok-308">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/tiktok-308.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-tiktok-309">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/tiktok-309.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-tiktok-312">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/tiktok-312.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-tiktok-313">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/tiktok-313.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-tiktok-316">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/tiktok-316.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-tiktok-319">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/tiktok-319.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-tiktok-328">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/tiktok-328.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-tiktok-332">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/tiktok-332.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-tiktok-335">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/tiktok-335.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-tiktok-336">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/tiktok-336.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-tiktok-337">
+          <video poster="" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/tiktok-337.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-4">Cross-identity Cases</h2>
+      Our model requires paired camera trajectory and 2D human pose, making cross-identity inference more complex than Animate Anyone's static camera setting. We show successful cases with simple backgrounds, including source videos (first 2 videos) and cross-identity results (other videos). Besides extracting data from existing videos, you can project 3D human poses to camera space and export custom camera trajectories using software like Blender.
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-steve">
+          <video poster="" id="steve" autoplay controls muted loop height="100%">
+            <source src="./static/videos/cross-id/ballet-0.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-steve">
+          <video poster="" id="steve" autoplay controls muted loop height="100%">
+            <source src="./static/videos/cross-id/taylor-0.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-steve">
+          <video poster="" id="steve" autoplay controls muted loop height="100%">
+            <source src="./static/videos/cross-id/ballet-1.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-steve">
+          <video poster="" id="steve" autoplay controls muted loop height="100%">
+            <source src="./static/videos/cross-id/taylor-1.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-steve">
+          <video poster="" id="steve" autoplay controls muted loop height="100%">
+            <source src="./static/videos/cross-id/ballet-2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-4">Visualization of Synthetic Videos</h2>
+      <p>TL;DR: We synthesis two types of human-centric videos according to the asset of humans: (1) SMPL-X poses with UV texturemap and simulated clothes similar to <a href="https://bedlam.is.tue.mpg.de/" style="color: darkcyan;">BEDLAM</a>, and (2) 3D anime character asset with rigged motions. The backgrounds are from HDRI images or 3D scenes. The motivation of using synthetic data is accurate human/camera poses and more diverse camera trajectories.</p>
+      <p>To view real videos, visit Pexels.com and search for human-related terms. Our HumanVid dataset's real portion is filtered from videos downloaded from Pexels.</p>
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-steve">
+          <video poster="" id="steve" autoplay controls muted loop style="height: 300px;">
+            <source src="./static/videos/synthetic_videos/smplx_1.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="chair-tp" autoplay controls muted loop style="height: 300px;">
+            <source src="./static/videos/synthetic_videos/smplx_2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline style="height: 300px;">
+            <source src="./static/videos/synthetic_videos/anime_1.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline style="height: 300px;">
+            <source src="./static/videos/synthetic_videos/anime_2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-4">Challenging or Failure Cases</h2>
+      <p>We show some challenging cases that are not properly solved by existing baseline method. For example, (1) complex and loose-fitting clothing: it is hard to simulate relax clothing correctly; (2) large camera translations: current SD-1.5 and AnimateDiff model struggles to out-paint large regions of backgrounds when the camera translation is too large; (3) complex occluded backgrounds: current model also struggles to out-paint occluded regions, where many artifacts observed in such cases; (4) human-object interaction: current model cannot correctly model complex movement of objects, such as the volleyball and dumbbell's movement along with hands in the visualized cases. Yet, it is able to model simple movements, such as a man holding a phone; (5) inappropriate reference image: We also provide a failure case of the video from the movie Matrix. As we shown before, our method show good visual quality in this case by an appropriately random-sampled reference image. However here we show that if the randomly sampled reference image contains too little information, the same model on the same video could also show some artifacts. We leave such limitations to the future works and hope our observeration could benefit the community.</p>
+      <p>Besides, our success cases shown above is not cherry-picked. Although the randomness of reference image could affect the successful rate of generating videos without notable artifacts, we empirically find that about 50% cases could achieve the quality similar to videos shown above by running each test video 3 times and select the best one.</p>
+
+
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-steve">
+          <video poster="" id="steve" autoplay controls muted loop height="100%">
+            <source src="./static/videos/challenge_case/pexels-h-1.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/challenge_case/pexels-h-2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/challenge_case/pexels-h-4.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/challenge_case/pexels-h-3.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/failure_case/pexels-object-fail.mp4"
+                    type="video/mp4">
+          </video>
+        </div>  
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/challenge_case/pexels-v-1.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/challenge_case/pexels-v-2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/challenge_case/pexels-v-3.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="chair-tp" autoplay controls muted loop height="100%">
+            <source src="./static/videos/challenge_case/tiktok-301.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="chair-tp" autoplay controls muted loop height="100%">
+            <source src="./static/videos/failure_case/pexels-translation-fail-3.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="chair-tp" autoplay controls muted loop height="100%">
+            <source src="./static/videos/failure_case/pexels-translation-fail-2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="chair-tp" autoplay controls muted loop height="100%">
+            <source src="./static/videos/failure_case/pexels-translation-fail-1.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/failure_case/matrix-fail.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+-->
+
+<!--
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered">
+
+      Visual Effects.
+      <div class="column">
+        <div class="content">
+          <h2 class="title is-3">Visual Effects</h2>
+          <p>
+            Using <i>nerfies</i> you can create fun visual effects. This Dolly zoom effect
+            would be impossible without nerfies since it would require going through a wall.
+          </p>
+          <video id="dollyzoom" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/dollyzoom-stacked.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+       -->
+      <!--/ Visual Effects. -->
+
+      <!-- Matting. 
+      <div class="column">
+        <h2 class="title is-3">Matting</h2>
+        <div class="columns is-centered">
+          <div class="column content">
+            <p>
+              As a byproduct of our method, we can also solve the matting problem by ignoring
+              samples that fall outside of a bounding box during rendering.
+            </p>
+            <video id="matting-video" controls playsinline height="100%">
+              <source src="./static/videos/matting.mp4"
+                      type="video/mp4">
+            </video>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    -->
+    <!--/ Matting. -->
+
+
+    <!-- Concurrent Work. 
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Related Links</h2>
+
+        <div class="content has-text-justified">
+          <p>
+            There's a lot of excellent work that was introduced around the same time as ours.
+          </p>
+          <p>
+            <a href="https://arxiv.org/abs/2104.09125">Progressive Encoding for Neural Optimization</a> introduces an idea similar to our windowed position encoding for coarse-to-fine optimization.
+          </p>
+          <p>
+            <a href="https://www.albertpumarola.com/research/D-NeRF/index.html">D-NeRF</a> and <a href="https://gvv.mpi-inf.mpg.de/projects/nonrigid_nerf/">NR-NeRF</a>
+            both use deformation fields to model non-rigid scenes.
+          </p>
+          <p>
+            Some works model videos with a NeRF by directly modulating the density, such as <a href="https://video-nerf.github.io/">Video-NeRF</a>, <a href="https://www.cs.cornell.edu/~zl548/NSFF/">NSFF</a>, and <a href="https://neural-3d-video.github.io/">DyNeRF</a>
+          </p>
+          <p>
+            There are probably many more by the time you are reading this. Check out <a href="https://dellaert.github.io/NeRF/">Frank Dellart's survey on recent NeRF papers</a>, and <a href="https://github.com/yenchenlin/awesome-NeRF">Yen-Chen Lin's curated list of NeRF papers</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+    -->
+    <!--/ Concurrent Work. -->
+
+
+
+
+<!-- 
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{park2021nerfies,
+  author    = {Park, Keunhong and Sinha, Utkarsh and Barron, Jonathan T. and Bouaziz, Sofien and Goldman, Dan B and Seitz, Steven M. and Martin-Brualla, Ricardo},
+  title     = {Nerfies: Deformable Neural Radiance Fields},
+  journal   = {ICCV},
+  year      = {2021},
+}</code></pre>
+  </div>
+</section>
+-->
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <!--
+      <a class="icon-link"
+         href="./static/videos/nerfies_paper.pdf">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/keunhong" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+      -->
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            The website template is borrowed from <a
+              href="https://github.com/nerfies/nerfies.github.io">nerfies's website code</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
